@@ -1,0 +1,50 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins:
+              - "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+      routes:
+        - id: auth-login
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/login, /auth/validate, /error
+        - id: auth-register
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/register
+          filters:
+            - JwtFilter
+        - id: patient-service
+          uri: lb://patient-service
+          predicates:
+            - Path=/patients/**, /records/**, /interventions/**
+          filters:
+            - JwtFilter
+        - id: rdv-service
+          uri: lb://rdv-service
+          predicates:
+            - Path=/rdv/**
+          filters:
+            - JwtFilter
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
