@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Data
@@ -38,7 +38,7 @@ public class MedicalRecord {
 
     @OneToOne
     @JoinColumn(name = "patient_id")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Patient patient;
 
     @OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL)
