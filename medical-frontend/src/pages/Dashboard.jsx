@@ -249,10 +249,9 @@ export default function Dashboard() {
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={() => {
-                          setSelectedPatientForRecord(patient);
-                          setRecordDialogOpen(true);
-                        }}
+                        onClick={() =>
+                          navigate(`/patients/${patient.id}/record`)
+                        }
                       >
                         Manage Record
                       </Button>
@@ -277,11 +276,6 @@ export default function Dashboard() {
             </TableBody>
           </Table>
         </div>
-        <MedicalRecordDialog
-          patient={selectedPatientForRecord}
-          open={recordDialogOpen}
-          onOpenChange={setRecordDialogOpen}
-        />
       </main>
     </div>
   );
