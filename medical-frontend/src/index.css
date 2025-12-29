@@ -4,84 +4,58 @@
 
 @layer base {
   :root {
-    --background: 0.9842 0.0034 247.8575;
-    --foreground: 0.2433 0.0247 263.9506;
-    --card: 1 0 0;
-    --card-foreground: 0.2433 0.0247 263.9506;
-    --popover: 1 0 0;
-    --popover-foreground: 0.2433 0.0247 263.9506;
-    --primary: 0.6231 0.188 259.8145;
-    --primary-foreground: 1 0 0;
-    --secondary: 0.9288 0.0126 255.5078;
-    --secondary-foreground: 0.4455 0.0374 257.2808;
-    --muted: 0.9683 0.0069 247.8956;
-    --muted-foreground: 0.5544 0.0407 257.4166;
-    --accent: 0.9493 0.0202 216.1968;
-    --accent-foreground: 0.5109 0.0861 186.3914;
-    --destructive: 0.6368 0.2078 25.3313;
-    --destructive-foreground: 1 0 0;
-    --border: 0.9288 0.0126 255.5078;
-    --input: 0.9842 0.0034 247.8575;
-    --ring: 0.6231 0.188 259.8145;
-    --chart-1: 0.6231 0.188 259.8145;
-    --chart-2: 0.5854 0.2041 277.1173;
-    --chart-3: 0.6959 0.1491 162.4796;
-    --chart-4: 0.7686 0.1647 70.0804;
-    --chart-5: 0.6368 0.2078 25.3313;
-    --sidebar: 1 0 0;
-    --sidebar-foreground: 0.2433 0.0247 263.9506;
-    --sidebar-primary: 0.6231 0.188 259.8145;
-    --sidebar-primary-foreground: 1 0 0;
-    --sidebar-accent: 0.9493 0.0202 216.1968;
-    --sidebar-accent-foreground: 0.5109 0.0861 186.3914;
-    --sidebar-border: 0.9288 0.0126 255.5078;
-    --sidebar-ring: 0.6231 0.188 259.8145;
-    --radius: 0.5rem;
-    --shadow-sm: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-    --shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
-      0px 1px 2px 0px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0px 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0px 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0px 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-2xl: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+    --radius: 0.75rem;
+    --chart-1: 221.2 83.2% 53.3%;
+    --chart-2: 212.7 26.8% 83.9%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
 
   .dark {
-    --background: 0.2077 0.0398 265.7549;
-    --foreground: 0.9288 0.0126 255.5078;
-    --card: 0.2795 0.0368 260.031;
-    --card-foreground: 0.9288 0.0126 255.5078;
-    --popover: 0.2795 0.0368 260.031;
-    --popover-foreground: 0.9288 0.0126 255.5078;
-    --primary: 0.7137 0.1434 254.624;
-    --primary-foreground: 0.2077 0.0398 265.7549;
-    --secondary: 0.3717 0.0392 257.287;
-    --secondary-foreground: 0.869 0.0198 252.8943;
-    --muted: 0.2795 0.0368 260.031;
-    --muted-foreground: 0.7107 0.0351 256.7878;
-    --accent: 0.5109 0.0861 186.3914;
-    --accent-foreground: 0.9493 0.0202 216.1968;
-    --destructive: 0.6368 0.2078 25.3313;
-    --destructive-foreground: 1 0 0;
-    --border: 0.3717 0.0392 257.287;
-    --input: 0.2077 0.0398 265.7549;
-    --ring: 0.7137 0.1434 254.624;
-    --chart-1: 0.7137 0.1434 254.624;
-    --chart-2: 0.6801 0.1583 276.9349;
-    --chart-3: 0.7729 0.1535 163.2231;
-    --chart-4: 0.879 0.1534 91.6054;
-    --chart-5: 0.6368 0.2078 25.3313;
-    --sidebar: 0.2077 0.0398 265.7549;
-    --sidebar-foreground: 0.9288 0.0126 255.5078;
-    --sidebar-primary: 0.7137 0.1434 254.624;
-    --sidebar-primary-foreground: 0.2077 0.0398 265.7549;
-    --sidebar-accent: 0.5109 0.0861 186.3914;
-    --sidebar-accent-foreground: 0.9493 0.0202 216.1968;
-    --sidebar-border: 0.3717 0.0392 257.287;
-    --sidebar-ring: 0.7137 0.1434 254.624;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    --chart-1: 217.2 91.2% 59.8%;
+    --chart-2: 222.2 47.4% 11.2%;
+    --chart-3: 217.2 32.6% 17.5%;
+    --chart-4: 210 40% 98%;
+    --chart-5: 215 20.2% 65.1%;
   }
 }
 
@@ -90,6 +64,56 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+  }
+
+  .premium-card {
+    @apply bg-white rounded-2xl border border-slate-200/60 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] hover:-translate-y-1;
+  }
+
+  .auth-gradient {
+    background: radial-gradient(
+        circle at top left,
+        hsl(221, 83%, 98%),
+        transparent
+      ),
+      radial-gradient(circle at bottom right, hsl(199, 89%, 98%), transparent),
+      linear-gradient(to bottom right, #ffffff, #f8fafc);
+  }
+
+  .header-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-700;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground shadow-lg shadow-blue-500/20 hover:bg-primary/90 hover:shadow-blue-500/40 transition-all active:scale-[0.98];
+  }
+
+  .input-field {
+    @apply bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: animate-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes animate-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

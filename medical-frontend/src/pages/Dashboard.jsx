@@ -21,13 +21,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import {
+  Users,
+  Plus,
+  Edit2,
+  Trash2,
+  ChevronRight,
+  Search,
+  LayoutDashboard,
+} from "lucide-react";
 import api from "../api/axios";
-import MedicalRecordDialog from "../components/MedicalRecordDialog";
+import Navbar from "../components/Navbar";
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [newPatient, setNewPatient] = useState({
     firstName: "",
     lastName: "",
@@ -36,9 +46,6 @@ export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
-  const [recordDialogOpen, setRecordDialogOpen] = useState(false);
-  const [selectedPatientForRecord, setSelectedPatientForRecord] =
-    useState(null);
 
   const fetchPatients = async () => {
     try {
@@ -53,11 +60,6 @@ export default function Dashboard() {
     fetchPatients();
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   const resetForm = () => {
     setNewPatient({ firstName: "", lastName: "", email: "" });
     setIsEditing(false);
@@ -68,39 +70,30 @@ export default function Dashboard() {
   const handleSavePatient = async () => {
     try {
       if (isEditing) {
-        // Update existing patient
         await api.put(`/patients/${currentId}`, {
           firstName: newPatient.firstName,
           lastName: newPatient.lastName,
         });
-        alert("Patient updated successfully.");
       } else {
-        // Create new patient (and user)
-        // 1. Create User in Auth Service
         const authResponse = await api.post("/auth/register", {
           email: newPatient.email,
-          passwordHash: "", // Will trigger default password in backend
+          passwordHash: "",
           role: "PATIENT",
         });
 
         const userId = authResponse.data.id;
-        alert("User account created! Linking patient profile...");
-
-        // 2. Create Patient Record linked to user
         await api.post("/patients", {
           firstName: newPatient.firstName,
           lastName: newPatient.lastName,
           userId: userId,
         });
-
-        alert("Patient profile created and linked successfully!");
       }
 
       resetForm();
       fetchPatients();
     } catch (error) {
       console.error("Failed to save patient", error);
-      alert("Failed to save patient. Check console for details.");
+      alert("Error processing request. See console.");
     }
   };
 
@@ -116,33 +109,45 @@ export default function Dashboard() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this patient?")) {
+    if (confirm("Permanently delete this patient profile?")) {
       try {
         await api.delete(`/patients/${id}`);
         fetchPatients();
       } catch (error) {
         console.error("Failed to delete patient", error);
-        alert("Failed to delete patient");
       }
     }
   };
 
+  const filteredPatients = patients.filter((p) =>
+    `${p.firstName} ${p.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground">
-      <header className="flex h-16 items-center border-b px-6 bg-card">
-        <h1 className="text-xl font-bold text-primary">Medical App</h1>
-        <div className="ml-auto flex items-center space-x-4">
-          <span className="text-sm font-medium">Welcome, {user?.email}</span>
-          <Button onClick={handleLogout} variant="destructive" size="sm">
-            Logout
-          </Button>
-        </div>
-      </header>
-      <main className="flex-1 p-8 container mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">
-            Patient Management
-          </h2>
+    <div className="flex min-h-screen flex-col bg-background selection:bg-primary/10">
+      <Navbar />
+
+      <main className="flex-1 container mx-auto px-6 py-10 animate-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+          <div>
+            <div className="flex items-center gap-2 text-primary font-bold mb-1">
+              <LayoutDashboard className="w-4 h-4" />
+              <span className="text-xs uppercase tracking-widest">
+                Administration
+              </span>
+            </div>
+            <h2 className="text-4xl font-extrabold tracking-tight text-slate-900">
+              Patient Registry
+            </h2>
+            <p className="text-slate-500 font-medium mt-1">
+              Total Patients:{" "}
+              <span className="text-primary">{patients.length}</span> recorded
+              in system
+            </p>
+          </div>
+
           <Dialog
             open={isOpen}
             onOpenChange={(open) => {
@@ -151,22 +156,31 @@ export default function Dashboard() {
             }}
           >
             <DialogTrigger asChild>
-              <Button onClick={() => resetForm()}>Add Patient</Button>
+              <Button
+                onClick={() => resetForm()}
+                className="btn-primary gap-2 h-12 px-6 rounded-xl font-bold"
+              >
+                <Plus className="w-5 h-5" />
+                Add New Patient
+              </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>
-                  {isEditing ? "Edit Patient" : "Add New Patient"}
+            <DialogContent className="sm:max-w-[480px] rounded-3xl p-8">
+              <DialogHeader className="pb-4">
+                <DialogTitle className="text-2xl font-bold">
+                  {isEditing ? "Modify Patient" : "Enroll New Patient"}
                 </DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="text-[15px]">
                   {isEditing
-                    ? "Update details."
-                    : "Create a new patient account. Credentials will be generated."}
+                    ? "Update the patient's identity information below."
+                    : "Fill in the details to create a new patient account and profile."}
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="firstName" className="text-right">
+              <div className="space-y-6 py-4">
+                <div className="grid gap-2">
+                  <Label
+                    htmlFor="firstName"
+                    className="font-bold text-slate-700 ml-1"
+                  >
                     First Name
                   </Label>
                   <Input
@@ -178,11 +192,15 @@ export default function Dashboard() {
                         firstName: e.target.value,
                       })
                     }
-                    className="col-span-3"
+                    placeholder="Enter first name"
+                    className="input-field h-11"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="lastName" className="text-right">
+                <div className="grid gap-2">
+                  <Label
+                    htmlFor="lastName"
+                    className="font-bold text-slate-700 ml-1"
+                  >
                     Last Name
                   </Label>
                   <Input
@@ -191,13 +209,17 @@ export default function Dashboard() {
                     onChange={(e) =>
                       setNewPatient({ ...newPatient, lastName: e.target.value })
                     }
-                    className="col-span-3"
+                    placeholder="Enter last name"
+                    className="input-field h-11"
                   />
                 </div>
                 {!isEditing && (
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="email" className="text-right">
-                      Email
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="email"
+                      className="font-bold text-slate-700 ml-1"
+                    >
+                      Email (Account ID)
                     </Label>
                     <Input
                       id="email"
@@ -206,69 +228,119 @@ export default function Dashboard() {
                       onChange={(e) =>
                         setNewPatient({ ...newPatient, email: e.target.value })
                       }
-                      className="col-span-3"
+                      placeholder="patient@email.com"
+                      className="input-field h-11"
                     />
                   </div>
                 )}
               </div>
-              <DialogFooter>
-                <Button onClick={handleSavePatient}>
-                  {isEditing ? "Update" : "Create"}
+              <DialogFooter className="pt-6">
+                <Button
+                  onClick={handleSavePatient}
+                  className="btn-primary h-12 px-8 font-bold w-full sm:w-auto"
+                >
+                  {isEditing ? "Save Changes" : "Confirm Enrollment"}
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
 
-        <div className="rounded-md border bg-card">
+        {/* Search and Filters Bar */}
+        <div className="mb-8 flex flex-col sm:row items-center gap-4">
+          <div className="relative w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Input
+              placeholder="Search by patient name..."
+              className="pl-12 h-14 bg-white border-slate-200/60 rounded-2xl shadow-sm focus:ring-primary/20"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Patients Table Container */}
+        <div className="premium-card overflow-hidden">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID (Short)</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+            <TableHeader className="bg-slate-50/50">
+              <TableRow className="hover:bg-transparent border-slate-100">
+                <TableHead className="w-[140px] font-bold text-slate-500 px-6 py-5">
+                  REFERENCE
+                </TableHead>
+                <TableHead className="font-bold text-slate-500">
+                  PATIENT NAME
+                </TableHead>
+                <TableHead className="text-right font-bold text-slate-500 px-6">
+                  MANAGEMENT
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {patients.length === 0 ? (
+              {filteredPatients.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="h-24 text-center">
-                    No results.
+                  <TableCell colSpan={3} className="h-64 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <div className="p-4 rounded-full bg-slate-50">
+                        <Users className="w-8 h-8 text-slate-300" />
+                      </div>
+                      <p className="text-slate-400 font-medium italic">
+                        No matches found for your search.
+                      </p>
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : (
-                patients.map((patient) => (
-                  <TableRow key={patient.id}>
-                    <TableCell className="font-medium text-xs">
-                      {patient.id?.substring(0, 8)}...
+                filteredPatients.map((patient) => (
+                  <TableRow
+                    key={patient.id}
+                    className="group border-slate-100/60 transition-colors hover:bg-slate-50/50"
+                  >
+                    <TableCell className="px-6 py-5">
+                      <span className="font-mono text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">
+                        ID-{patient.id?.substring(0, 6)}
+                      </span>
                     </TableCell>
                     <TableCell>
-                      {patient.firstName} {patient.lastName}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                          {patient.firstName[0]}
+                          {patient.lastName[0]}
+                        </div>
+                        <span className="font-bold text-slate-700 text-[15px]">
+                          {patient.firstName} {patient.lastName}
+                        </span>
+                      </div>
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() =>
-                          navigate(`/patients/${patient.id}/record`)
-                        }
-                      >
-                        Manage Record
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(patient)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(patient.id)}
-                      >
-                        Delete
-                      </Button>
+                    <TableCell className="text-right px-6">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-9 font-bold bg-primary/5 text-primary hover:bg-primary hover:text-white rounded-lg transition-all px-4"
+                          onClick={() =>
+                            navigate(`/patients/${patient.id}/record`)
+                          }
+                        >
+                          View Records
+                          <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/5 transition-colors"
+                          onClick={() => handleEdit(patient)}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                          onClick={() => handleDelete(patient.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

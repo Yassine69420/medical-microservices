@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
+import { HeartPulse } from "lucide-react";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -30,55 +31,100 @@ export default function Register() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50">
-      <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>Create a new account</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email">Email</Label>
+    <div className="flex min-h-screen items-center justify-center auth-gradient p-6">
+      <div className="w-full max-w-[440px] animate-in">
+        <div className="flex flex-col items-center mb-10">
+          <div className="flex items-center justify-center w-20 h-20 rounded-[24px] bg-primary shadow-[0_12px_24px_-4px_rgba(59,130,246,0.3)] mb-6 transition-transform hover:scale-105">
+            <HeartPulse className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            MedConnect
+          </h1>
+          <p className="text-slate-500 font-medium mt-2">
+            Intelligent Health Management
+          </p>
+        </div>
+
+        <Card className="premium-card">
+          <CardHeader className="space-y-2 pb-6 px-8 pt-8">
+            <CardTitle className="text-2xl font-bold tracking-tight text-center">
+              Create account
+            </CardTitle>
+            <CardDescription className="text-center text-[15px]">
+              Join our network of healthcare professionals
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-5 px-8">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="email"
+                  className="text-sm font-semibold text-slate-700 ml-1"
+                >
+                  Email Address
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="input-field h-11 px-4"
+                  required
                 />
               </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="password"
+                  university
+                  className="text-sm font-semibold text-slate-700 ml-1"
+                >
+                  Password
+                </Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Password"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="input-field h-11 px-4"
+                  required
                 />
               </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => navigate("/login")}
-            >
-              Cancel
-            </Button>
-            <Button type="submit">Register</Button>
-          </CardFooter>
-        </form>
-        <div className="p-4 text-center text-sm">
-          Already have an account?{" "}
-          <Link to="/login" className="underline">
-            Login
-          </Link>
-        </div>
-      </Card>
+            </CardContent>
+            <CardFooter className="flex flex-col gap-6 px-8 pb-8 pt-4">
+              <Button
+                type="submit"
+                className="btn-primary w-full h-11 text-[15px] font-semibold"
+              >
+                Create Account
+              </Button>
+              <div className="relative w-full">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-slate-200"></span>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-3 text-slate-500 font-medium">
+                    Already registered?
+                  </span>
+                </div>
+              </div>
+              <p className="text-center text-sm font-medium text-slate-600">
+                <Link
+                  to="/login"
+                  className="text-primary hover:text-primary/80 transition-colors font-bold underline-offset-4 hover:underline"
+                >
+                  Sign in to portal
+                </Link>
+              </p>
+            </CardFooter>
+          </form>
+        </Card>
+
+        <p className="mt-8 text-center text-xs text-slate-400 font-medium">
+          © 2025 MedConnect Systems. All rights reserved.
+        </p>
+      </div>
     </div>
   );
 }

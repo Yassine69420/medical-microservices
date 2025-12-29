@@ -26,8 +26,12 @@ import {
   Calendar,
   ClipboardList,
   Activity,
+  UserCircle,
+  Stethoscope,
+  Info,
 } from "lucide-react";
 import api from "../api/axios";
+import Navbar from "../components/Navbar";
 
 export default function MedicalRecordDetail() {
   const { patientId } = useParams();
@@ -55,11 +59,9 @@ export default function MedicalRecordDetail() {
   const fetchPatientAndRecord = async () => {
     try {
       setLoading(true);
-      // Fetch patient details directly
       const patientRes = await api.get(`/patients/${patientId}`);
       if (patientRes.data) {
         setPatient(patientRes.data);
-        // Fetch record
         await fetchRecord(patientId);
       }
     } catch (error) {
@@ -100,32 +102,26 @@ export default function MedicalRecordDetail() {
   const handleUpdateRecord = async () => {
     try {
       if (record.id) {
-        // Update
         await api.put(`/records/${record.id}`, {
           ...record,
           patient: { id: patientId },
         });
       } else {
-        // Create
         const res = await api.post("/records", {
           ...record,
           patient: { id: patientId },
         });
         setRecord(res.data);
       }
-      alert("Medical record saved successfully.");
+      alert("Medical record updated successfully.");
     } catch (error) {
       console.error("Failed to save record", error);
-      alert(
-        "Failed to save record. " +
-          (error.response?.data?.message || error.message)
-      );
+      alert("Failed to save record. Check connection.");
     }
   };
 
   const handleAddIntervention = async () => {
     if (!record.id) {
-      // Must save record first
       try {
         const res = await api.post("/records", {
           ...record,
@@ -145,23 +141,16 @@ export default function MedicalRecordDetail() {
         ...newIntervention,
         medicalRecord: { id: record.id },
       });
-      setNewIntervention({
-        type: "",
-        doctorNotes: "",
-      });
+      setNewIntervention({ type: "", doctorNotes: "" });
       fetchInterventions(record.id);
     } catch (error) {
       console.error("Failed to add intervention", error);
-      alert(
-        "Failed to add intervention. " +
-          (error.response?.data?.message || error.message)
-      );
     }
   };
 
   const handleDeleteIntervention = async (id) => {
     if (!id) return;
-    if (confirm("Delete this intervention?")) {
+    if (confirm("Delete this intervention permanentely?")) {
       try {
         await api.delete(`/interventions/${id}`);
         fetchInterventions(record.id);
@@ -173,132 +162,194 @@ export default function MedicalRecordDetail() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        Loading...
+      <div className="flex h-screen flex-col items-center justify-center bg-background gap-4">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="font-bold text-slate-500 animate-pulse uppercase tracking-widest text-xs">
+          Retrieving Patient Data
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-6 md:p-10">
-      <div className="max-w-5xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/dashboard")}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                {patient?.firstName} {patient?.lastName}
-              </h1>
-              <p className="text-muted-foreground">Patient Medical File</p>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Navbar />
+
+      <main className="flex-1 container mx-auto px-6 py-10 animate-in">
+        <div className="max-w-6xl mx-auto space-y-10">
+          {/* Header Action Bar */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate("/dashboard")}
+                className="h-12 w-12 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 shadow-sm"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">
+                    Active File
+                  </span>
+                  <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                    ID: {patientId?.substring(0, 8)}
+                  </span>
+                </div>
+                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-none">
+                  {patient?.firstName} {patient?.lastName}
+                </h1>
+              </div>
             </div>
-          </div>
-          <Button onClick={handleUpdateRecord} className="shadow-md">
-            <Save className="mr-2 h-4 w-4" /> Save Record
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Left Column: General Info */}
-          <div className="md:col-span-1 space-y-6">
-            <Card className="shadow-sm border-none bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center">
-                  <ClipboardList className="mr-2 h-5 w-5 text-blue-500" />
-                  Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Allergies</Label>
-                  <Input
-                    value={record.allergies}
-                    onChange={(e) =>
-                      setRecord({ ...record, allergies: e.target.value })
-                    }
-                    placeholder="None"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Treatments</Label>
-                  <Input
-                    value={record.treatments}
-                    onChange={(e) =>
-                      setRecord({ ...record, treatments: e.target.value })
-                    }
-                    placeholder="Ongoing treatments..."
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm border-none bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center text-red-500">
-                  <Activity className="mr-2 h-5 w-5" />
-                  Latest Update
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm font-medium">
-                  {record.updatedAt
-                    ? new Date(record.updatedAt).toLocaleString()
-                    : "Never"}
-                </p>
-              </CardContent>
-            </Card>
+            <Button
+              onClick={handleUpdateRecord}
+              className="btn-primary h-12 px-8 rounded-xl font-bold gap-2"
+            >
+              <Save className="h-5 w-5" />
+              Update Patient Record
+            </Button>
           </div>
 
-          {/* Right Column: Diagnosis & Interventions */}
-          <div className="md:col-span-2 space-y-6">
-            <Card className="shadow-sm border-none">
-              <CardHeader>
-                <CardTitle>Diagnosis & Notes</CardTitle>
-                <CardDescription>Main clinical observations</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Primary Diagnosis</Label>
-                  <Input
-                    value={record.diagnosis}
-                    onChange={(e) =>
-                      setRecord({ ...record, diagnosis: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Additional Notes</Label>
-                  <textarea
-                    className="w-full min-h-[100px] p-3 rounded-md border border-input bg-transparent text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    value={record.notes}
-                    onChange={(e) =>
-                      setRecord({ ...record, notes: e.target.value })
-                    }
-                    placeholder="Enter patient history or general observations..."
-                  />
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Column: Quick Insights */}
+            <div className="lg:col-span-4 space-y-8">
+              <Card className="premium-card border-none overflow-hidden">
+                <div className="h-2 bg-primary w-full"></div>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold flex items-center gap-2">
+                    <UserCircle className="h-5 w-5 text-primary" />
+                    Patient Profile
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
+                      Critical Allergies
+                    </Label>
+                    <Input
+                      value={record.allergies}
+                      onChange={(e) =>
+                        setRecord({ ...record, allergies: e.target.value })
+                      }
+                      placeholder="No allergies reported"
+                      className="input-field h-11 border-red-100/50 focus:ring-red-500/10 placeholder:text-slate-300 italic"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
+                      Current Treatments
+                    </Label>
+                    <textarea
+                      value={record.treatments}
+                      onChange={(e) =>
+                        setRecord({ ...record, treatments: e.target.value })
+                      }
+                      placeholder="Specify ongoing medications..."
+                      className="input-field w-full min-h-[100px] p-4 text-[15px]"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="shadow-md border-none overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                <CardTitle className="flex items-center">
-                  <Calendar className="mr-2 h-5 w-5" />
-                  Interventions History
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="p-4 bg-blue-50/50 border-b space-y-4">
-                  <div className="flex gap-4">
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-xs">Procedure Type</Label>
+              <Card className="premium-card border-none bg-slate-900 text-white overflow-hidden">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-emerald-400" />
+                    Vital Sync
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-1">
+                    <p className="text-3xl font-extrabold">Active</p>
+                    <p className="text-slate-500 text-sm font-medium">
+                      Last update:{" "}
+                      {record.updatedAt
+                        ? new Date(record.updatedAt).toLocaleString()
+                        : "First entry"}
+                    </p>
+                  </div>
+                  <div className="mt-8 grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase">
+                        Records
+                      </p>
+                      <p className="text-xl font-bold">
+                        {interventions.length}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase">
+                        Status
+                      </p>
+                      <p className="text-xl font-bold text-emerald-400">OK</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right Column: Diagnosis & Timeline */}
+            <div className="lg:col-span-8 space-y-8">
+              <Card className="premium-card border-none">
+                <CardHeader className="border-b border-slate-50">
+                  <CardTitle className="text-xl font-bold flex items-center gap-2">
+                    <Stethoscope className="h-5 w-5 text-primary" />
+                    Clinical Diagnosis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6 pt-6">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-slate-700 ml-1">
+                      Core Diagnosis
+                    </Label>
+                    <Input
+                      value={record.diagnosis}
+                      onChange={(e) =>
+                        setRecord({ ...record, diagnosis: e.target.value })
+                      }
+                      placeholder="Enter primary clinical finding..."
+                      className="input-field h-12 text-lg font-semibold text-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-slate-700 ml-1">
+                      Clinical Observations & History
+                    </Label>
+                    <textarea
+                      className="input-field w-full min-h-[160px] p-4 text-[15px] leading-relaxed"
+                      value={record.notes}
+                      onChange={(e) =>
+                        setRecord({ ...record, notes: e.target.value })
+                      }
+                      placeholder="Enter detailed patient history, family history, and general clinical observations..."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Interventions Timeline */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between px-2">
+                  <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-primary" />
+                    Medical Interventions
+                  </h3>
+                  <div className="flex gap-2">
+                    <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+                      History
+                    </span>
+                  </div>
+                </div>
+
+                <div className="premium-card overflow-hidden">
+                  <div className="p-6 bg-slate-50/80 border-b border-slate-100 flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1 space-y-2">
+                      <Label className="text-[11px] font-bold text-slate-500 uppercase ml-1">
+                        Procedure Type
+                      </Label>
                       <Input
-                        placeholder="e.g. Surgery, X-Ray"
+                        placeholder="e.g. Consultation, Labwork"
                         value={newIntervention.type}
                         onChange={(e) =>
                           setNewIntervention({
@@ -306,12 +357,15 @@ export default function MedicalRecordDetail() {
                             type: e.target.value,
                           })
                         }
+                        className="input-field h-11 bg-white"
                       />
                     </div>
-                    <div className="flex-[2] space-y-1">
-                      <Label className="text-xs">Clinical Notes</Label>
+                    <div className="flex-[2] space-y-2">
+                      <Label className="text-[11px] font-bold text-slate-500 uppercase ml-1">
+                        Practitioner Notes
+                      </Label>
                       <Input
-                        placeholder="Operation details, results..."
+                        placeholder="Observations during procedure..."
                         value={newIntervention.doctorNotes}
                         onChange={(e) =>
                           setNewIntervention({
@@ -319,69 +373,87 @@ export default function MedicalRecordDetail() {
                             doctorNotes: e.target.value,
                           })
                         }
+                        className="input-field h-11 bg-white"
                       />
                     </div>
-                    <Button className="mt-auto" onClick={handleAddIntervention}>
-                      <Plus className="h-4 w-4 mr-1" /> Add
+                    <Button
+                      onClick={handleAddIntervention}
+                      className="sm:mt-auto h-11 px-6 font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Entry
                     </Button>
                   </div>
-                </div>
 
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[120px]">Date</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Observation</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {interventions.length === 0 ? (
-                      <TableRow>
-                        <TableCell
-                          colSpan={4}
-                          className="text-center py-10 text-muted-foreground"
-                        >
-                          No history found for this patient.
-                        </TableCell>
+                  <Table>
+                    <TableHeader className="bg-slate-50/30">
+                      <TableRow className="hover:bg-transparent border-slate-100">
+                        <TableHead className="w-[120px] font-bold text-slate-400 text-[11px] uppercase px-6">
+                          Date
+                        </TableHead>
+                        <TableHead className="font-bold text-slate-400 text-[11px] uppercase">
+                          Type
+                        </TableHead>
+                        <TableHead className="font-bold text-slate-400 text-[11px] uppercase">
+                          Observation
+                        </TableHead>
+                        <TableHead className="text-right px-6"></TableHead>
                       </TableRow>
-                    ) : (
-                      interventions.map((iv) => (
-                        <TableRow key={iv.id}>
-                          <TableCell className="text-xs font-medium">
-                            {iv.createdAt
-                              ? new Date(iv.createdAt).toLocaleDateString()
-                              : "N/A"}
-                          </TableCell>
-                          <TableCell>
-                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold">
-                              {iv.type}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-sm italic text-gray-600">
-                            {iv.doctorNotes}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-red-500 hover:text-red-700"
-                              onClick={() => handleDeleteIntervention(iv.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                    </TableHeader>
+                    <TableBody>
+                      {interventions.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={4} className="h-40 text-center">
+                            <div className="flex flex-col items-center justify-center gap-2 opacity-30">
+                              <Info className="h-8 w-8" />
+                              <p className="font-bold uppercase tracking-widest text-[10px]">
+                                No History Recorded
+                              </p>
+                            </div>
                           </TableCell>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                      ) : (
+                        interventions.map((iv) => (
+                          <TableRow
+                            key={iv.id}
+                            className="group border-slate-100/60 transition-colors hover:bg-slate-50/50"
+                          >
+                            <TableCell className="px-6 py-5">
+                              <span className="font-mono text-[13px] font-bold text-slate-500">
+                                {iv.createdAt
+                                  ? new Date(iv.createdAt).toLocaleDateString()
+                                  : "N/A"}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <span className="px-3 py-1 bg-primary/5 text-primary rounded-full text-[11px] font-extrabold uppercase tracking-tight">
+                                {iv.type}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-[14px] text-slate-600 font-medium">
+                              {iv.doctorNotes}
+                            </TableCell>
+                            <TableCell className="text-right px-6">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-9 w-9 text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                onClick={() => handleDeleteIntervention(iv.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
