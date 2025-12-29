@@ -1,61 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
-    --radius: 0.75rem;
-    --chart-1: 221.2 83.2% 53.3%;
-    --chart-2: 212.7 26.8% 83.9%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --background: 0.9789 0.0082 121.6272;
+    --foreground: 0 0 0;
+    --card: 1 0 0;
+    --card-foreground: 0 0 0;
+    --popover: 1 0 0;
+    --popover-foreground: 0 0 0;
+    --primary: 0.5106 0.2301 276.9656;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.7038 0.123 182.5025;
+    --secondary-foreground: 1 0 0;
+    --muted: 0.9551 0 0;
+    --muted-foreground: 0.3211 0 0;
+    --accent: 0.7686 0.1647 70.0804;
+    --accent-foreground: 0 0 0;
+    --destructive: 0.6368 0.2078 25.3313;
+    --destructive-foreground: 1 0 0;
+    --border: 0 0 0;
+    --input: 0.5555 0 0;
+    --ring: 0.7853 0.1041 274.7134;
+    --radius: 1rem;
+    --font-sans: "DM Sans", sans-serif;
+    --font-mono: "Space Mono", monospace;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --chart-1: 217.2 91.2% 59.8%;
-    --chart-2: 222.2 47.4% 11.2%;
-    --chart-3: 217.2 32.6% 17.5%;
-    --chart-4: 210 40% 98%;
-    --chart-5: 215 20.2% 65.1%;
+    --background: 0 0 0;
+    --foreground: 1 0 0;
+    --card: 0.2455 0.0217 257.2823;
+    --card-foreground: 1 0 0;
+    --popover: 0.2455 0.0217 257.2823;
+    --popover-foreground: 1 0 0;
+    --primary: 0.6801 0.1583 276.9349;
+    --primary-foreground: 0 0 0;
+    --secondary: 0.7845 0.1325 181.912;
+    --secondary-foreground: 0 0 0;
+    --muted: 0.3211 0 0;
+    --muted-foreground: 0.8452 0 0;
+    --accent: 0.879 0.1534 91.6054;
+    --accent-foreground: 0 0 0;
+    --destructive: 0.7106 0.1661 22.2162;
+    --destructive-foreground: 0 0 0;
+    --border: 0.4459 0 0;
+    --input: 1 0 0;
+    --ring: 0.6801 0.1583 276.9349;
   }
 }
 
@@ -65,45 +59,43 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-sans);
   }
 }
 
 @layer components {
-  .glass-panel {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
-  }
-
   .premium-card {
-    @apply bg-white rounded-2xl border border-slate-200/60 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] hover:-translate-y-1;
+    @apply bg-card text-card-foreground rounded-[var(--radius)] border border-black shadow-sm transition-all duration-200 hover:shadow-md;
   }
 
   .auth-gradient {
-    background: radial-gradient(
-        circle at top left,
-        hsl(221, 83%, 98%),
-        transparent
-      ),
-      radial-gradient(circle at bottom right, hsl(199, 89%, 98%), transparent),
-      linear-gradient(to bottom right, #ffffff, #f8fafc);
+    @apply bg-background;
   }
 
   .header-gradient {
-    @apply bg-gradient-to-r from-blue-600 to-indigo-700;
+    @apply bg-background border-b border-black;
   }
 
   .btn-primary {
-    @apply bg-primary text-primary-foreground shadow-lg shadow-blue-500/20 hover:bg-primary/90 hover:shadow-blue-500/40 transition-all active:scale-[0.98];
+    @apply bg-primary text-primary-foreground rounded-[var(--radius)] px-6 py-2.5 font-bold transition-all hover:opacity-90 active:scale-95 border-black border-2;
   }
 
   .input-field {
-    @apply bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all;
+    @apply bg-card border-black border-2 text-foreground focus:ring-2 focus:ring-primary/20 transition-all rounded-[var(--radius)] px-4 py-2;
+  }
+
+  .status-positive {
+    @apply bg-secondary text-secondary-foreground rounded-full px-3 py-1 text-xs font-bold border-black border;
+  }
+
+  .badge-soft {
+    @apply rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-black;
   }
 }
 
 @layer utilities {
   .animate-in {
-    animation: animate-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: animate-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes animate-in {
@@ -115,5 +107,10 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  .text-glow {
+    /* Subtle text treatment matching the vibe - keeping name for compatibility but changing effect */
+    @apply tracking-tight;
   }
 }

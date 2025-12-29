@@ -102,7 +102,7 @@ export default function MedicalRecordDetail() {
     }
   };
 
-  const handleUpdateRecord = async () => {
+  const handleSave = async () => {
     try {
       if (record.id) {
         await api.put(`/records/${record.id}`, {
@@ -175,7 +175,7 @@ export default function MedicalRecordDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col selection:bg-primary/20">
       <Navbar />
 
       <main className="flex-1 container mx-auto px-6 py-10 animate-in">
@@ -184,23 +184,23 @@ export default function MedicalRecordDetail() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 onClick={() => navigate("/dashboard")}
-                className="h-12 w-12 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 shadow-sm"
+                className="h-12 w-12 rounded-full border-black border-2 hover:bg-secondary hover:text-white transition-all shadow-sm"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">
-                    Active File
+                  <span className="badge-soft bg-primary/10 text-primary border-primary">
+                    Patient File
                   </span>
-                  <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full uppercase tracking-widest">
-                    ID: {patientId?.substring(0, 8)}
+                  <span className="badge-soft bg-card text-muted-foreground border-muted">
+                    ID: {patientId?.substring(0, 8).toUpperCase()}
                   </span>
                 </div>
-                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-none">
+                <h1 className="text-4xl font-black tracking-tighter text-foreground leading-none">
                   {patient?.firstName} {patient?.lastName}
                 </h1>
               </div>
@@ -209,17 +209,17 @@ export default function MedicalRecordDetail() {
               <Button
                 onClick={() => setAppointmentOpen(true)}
                 variant="outline"
-                className="h-12 px-6 rounded-xl font-bold gap-2 border-slate-200 text-slate-700 hover:bg-slate-50"
+                className="h-11 px-6 rounded-full font-black border-black border-2 hover:bg-accent transition-all text-xs shadow-sm bg-card"
               >
-                <CalendarPlus className="h-5 w-5 text-primary" />
+                <CalendarPlus className="h-4 w-4 mr-2 text-primary" />
                 Book Appointment
               </Button>
               <Button
-                onClick={handleUpdateRecord}
-                className="btn-primary h-12 px-8 rounded-xl font-bold gap-2"
+                onClick={handleSave}
+                className="btn-primary h-11 px-8 rounded-full shadow-sm text-xs"
               >
-                <Save className="h-5 w-5" />
-                Update Patient Record
+                <Save className="h-4 w-4 mr-2" />
+                Save Changes
               </Button>
             </div>
           </div>
@@ -231,19 +231,19 @@ export default function MedicalRecordDetail() {
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column: Quick Insights */}
+            {/* Left Column: Profile Insight */}
             <div className="lg:col-span-4 space-y-8">
-              <Card className="premium-card border-none overflow-hidden">
-                <div className="h-2 bg-primary w-full"></div>
+              <Card className="premium-card border-black border-2 bg-card relative overflow-hidden">
+                <div className="h-2 bg-primary w-full border-b border-black"></div>
                 <CardHeader>
-                  <CardTitle className="text-xl font-bold flex items-center gap-2">
+                  <CardTitle className="text-xl font-black flex items-center gap-2 text-foreground tracking-tighter">
                     <UserCircle className="h-5 w-5 text-primary" />
-                    Patient Profile
+                    Patient Summary
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
+                    <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
                       Critical Allergies
                     </Label>
                     <Input
@@ -251,124 +251,128 @@ export default function MedicalRecordDetail() {
                       onChange={(e) =>
                         setRecord({ ...record, allergies: e.target.value })
                       }
-                      placeholder="No allergies reported"
-                      className="input-field h-11 border-red-100/50 focus:ring-red-500/10 placeholder:text-slate-300 italic"
+                      placeholder="None declared"
+                      className="input-field h-12 border-destructive/30 focus:border-destructive"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">
-                      Current Treatments
+                    <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                      Active Treatments
                     </Label>
                     <textarea
                       value={record.treatments}
                       onChange={(e) =>
                         setRecord({ ...record, treatments: e.target.value })
                       }
-                      placeholder="Specify ongoing medications..."
-                      className="input-field w-full min-h-[100px] p-4 text-[15px]"
+                      placeholder="Specify therapeutic regimens..."
+                      className="input-field w-full min-h-[140px] p-4 text-sm font-bold leading-relaxed"
                     />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="premium-card border-none bg-slate-900 text-white overflow-hidden">
+              <Card className="premium-card border-black border-2 bg-secondary/5 overflow-hidden">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-emerald-400" />
-                    Vital Sync
+                  <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 text-primary">
+                    <Activity className="h-4 w-4" />
+                    Record Status
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-1">
-                    <p className="text-3xl font-extrabold">Active</p>
-                    <p className="text-slate-500 text-sm font-medium">
-                      Last update:{" "}
-                      {record.updatedAt
-                        ? new Date(record.updatedAt).toLocaleString()
-                        : "First entry"}
+                    <p className="text-3xl font-black text-foreground tracking-tighter uppercase">
+                      File Status
+                    </p>
+                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.15em]">
+                      Last updated:{" "}
+                      <span className="text-foreground">
+                        {record.updatedAt
+                          ? new Date(record.updatedAt).toLocaleDateString()
+                          : "New Record"}
+                      </span>
                     </p>
                   </div>
-                  <div className="mt-8 grid grid-cols-2 gap-4">
-                    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase">
-                        Records
+                  <div className="mt-8 grid grid-cols-2 gap-3">
+                    <div className="p-4 bg-card rounded-2xl border-2 border-black">
+                      <p className="font-black text-muted-foreground uppercase tracking-widest text-[9px]">
+                        Entries
                       </p>
-                      <p className="text-xl font-bold">
+                      <p className="text-2xl font-black text-foreground mt-1">
                         {interventions.length}
                       </p>
                     </div>
-                    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase">
+                    <div className="p-4 bg-card rounded-2xl border-2 border-black">
+                      <p className="font-black text-muted-foreground uppercase tracking-widest text-[9px]">
                         Status
                       </p>
-                      <p className="text-xl font-bold text-emerald-400">OK</p>
+                      <p className="text-2xl font-black text-secondary mt-1">
+                        VALID
+                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Right Column: Diagnosis & Timeline */}
+            {/* Right Column: Diagnosis & History */}
             <div className="lg:col-span-8 space-y-8">
-              <Card className="premium-card border-none">
-                <CardHeader className="border-b border-slate-50">
-                  <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Card className="premium-card border-black border-2 bg-card">
+                <CardHeader className="border-b border-black">
+                  <CardTitle className="text-xl font-black flex items-center gap-2 text-foreground tracking-tighter">
                     <Stethoscope className="h-5 w-5 text-primary" />
                     Clinical Diagnosis
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
                   <div className="space-y-2">
-                    <Label className="text-sm font-bold text-slate-700 ml-1">
-                      Core Diagnosis
+                    <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                      Current Evaluation
                     </Label>
                     <Input
                       value={record.diagnosis}
                       onChange={(e) =>
                         setRecord({ ...record, diagnosis: e.target.value })
                       }
-                      placeholder="Enter primary clinical finding..."
-                      className="input-field h-12 text-lg font-semibold text-primary"
+                      placeholder="Establishing baseline..."
+                      className="input-field h-14 text-xl font-black text-foreground placeholder:text-muted/50"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-bold text-slate-700 ml-1">
-                      Clinical Observations & History
-                    </Label>
+                    <p className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                      Consultation Notes
+                    </p>
                     <textarea
-                      className="input-field w-full min-h-[160px] p-4 text-[15px] leading-relaxed"
+                      className="input-field w-full min-h-[220px] p-5 text-sm font-bold leading-relaxed"
                       value={record.notes}
                       onChange={(e) =>
                         setRecord({ ...record, notes: e.target.value })
                       }
-                      placeholder="Enter detailed patient history, family history, and general clinical observations..."
+                      placeholder="Document primary medical narrative and investigative findings..."
                     />
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Interventions Timeline */}
-              <div className="space-y-4">
+              {/* Timeline Container */}
+              <div className="space-y-5">
                 <div className="flex items-center justify-between px-2">
-                  <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-primary" />
-                    Medical Interventions
+                  <h3 className="text-xl font-black text-foreground flex items-center gap-3 tracking-tighter uppercase">
+                    Clinical History
                   </h3>
-                  <div className="flex gap-2">
-                    <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
-                      History
-                    </span>
-                  </div>
+                  <div className="h-0.5 flex-1 bg-black/5 mx-6"></div>
+                  <span className="badge-soft bg-card text-muted-foreground border-black/10">
+                    Archive
+                  </span>
                 </div>
 
-                <div className="premium-card overflow-hidden">
-                  <div className="p-6 bg-slate-50/80 border-b border-slate-100 flex flex-col sm:flex-row gap-4">
+                <div className="bg-card border-black border-2 rounded-[2rem] overflow-hidden shadow-sm">
+                  <div className="p-8 bg-muted/20 border-b border-black flex flex-col lg:flex-row gap-6">
                     <div className="flex-1 space-y-2">
-                      <Label className="text-[11px] font-bold text-slate-500 uppercase ml-1">
-                        Procedure Type
+                      <Label className="font-black text-[9px] text-muted-foreground uppercase tracking-widest ml-1">
+                        Intervention Type
                       </Label>
                       <Input
-                        placeholder="e.g. Consultation, Labwork"
+                        placeholder="e.g. Lab Analysis"
                         value={newIntervention.type}
                         onChange={(e) =>
                           setNewIntervention({
@@ -376,15 +380,15 @@ export default function MedicalRecordDetail() {
                             type: e.target.value,
                           })
                         }
-                        className="input-field h-11 bg-white"
+                        className="input-field h-11 text-xs font-bold"
                       />
                     </div>
                     <div className="flex-[2] space-y-2">
-                      <Label className="text-[11px] font-bold text-slate-500 uppercase ml-1">
-                        Practitioner Notes
+                      <Label className="font-black text-[9px] text-muted-foreground uppercase tracking-widest ml-1">
+                        Notes
                       </Label>
                       <Input
-                        placeholder="Observations during procedure..."
+                        placeholder="Key findings..."
                         value={newIntervention.doctorNotes}
                         onChange={(e) =>
                           setNewIntervention({
@@ -392,41 +396,42 @@ export default function MedicalRecordDetail() {
                             doctorNotes: e.target.value,
                           })
                         }
-                        className="input-field h-11 bg-white"
+                        className="input-field h-11 text-xs font-bold"
                       />
                     </div>
                     <Button
                       onClick={handleAddIntervention}
-                      className="sm:mt-auto h-11 px-6 font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl"
+                      className="lg:mt-auto h-11 px-8 rounded-full btn-primary text-xs"
                     >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Entry
+                      ADD STEP
                     </Button>
                   </div>
 
                   <Table>
-                    <TableHeader className="bg-slate-50/30">
-                      <TableRow className="hover:bg-transparent border-slate-100">
-                        <TableHead className="w-[120px] font-bold text-slate-400 text-[11px] uppercase px-6">
-                          Date
+                    <TableHeader className="bg-muted/30">
+                      <TableRow className="hover:bg-transparent border-black border-b">
+                        <TableHead className="w-[150px] font-black text-muted-foreground text-[9px] uppercase tracking-widest px-8 py-5">
+                          Timeline
                         </TableHead>
-                        <TableHead className="font-bold text-slate-400 text-[11px] uppercase">
-                          Type
+                        <TableHead className="font-black text-muted-foreground text-[9px] uppercase tracking-widest">
+                          Procedure
                         </TableHead>
-                        <TableHead className="font-bold text-slate-400 text-[11px] uppercase">
-                          Observation
+                        <TableHead className="font-black text-muted-foreground text-[9px] uppercase tracking-widest">
+                          Medical Data
                         </TableHead>
-                        <TableHead className="text-right px-6"></TableHead>
+                        <TableHead className="text-right px-8"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {interventions.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={4} className="h-40 text-center">
-                            <div className="flex flex-col items-center justify-center gap-2 opacity-30">
-                              <Info className="h-8 w-8" />
-                              <p className="font-bold uppercase tracking-widest text-[10px]">
-                                No History Recorded
+                          <TableCell
+                            colSpan={4}
+                            className="h-32 text-center border-none"
+                          >
+                            <div className="flex flex-col items-center justify-center opacity-30">
+                              <p className="font-black uppercase tracking-[0.2em] text-[9px]">
+                                Zero History Records
                               </p>
                             </div>
                           </TableCell>
@@ -435,31 +440,37 @@ export default function MedicalRecordDetail() {
                         interventions.map((iv) => (
                           <TableRow
                             key={iv.id}
-                            className="group border-slate-100/60 transition-colors hover:bg-slate-50/50"
+                            className="group border-muted/50 transition-all hover:bg-muted/10 border-b last:border-none"
                           >
-                            <TableCell className="px-6 py-5">
-                              <span className="font-mono text-[13px] font-bold text-slate-500">
+                            <TableCell className="px-8 py-5">
+                              <span className="font-mono text-[11px] font-black text-foreground">
                                 {iv.createdAt
-                                  ? new Date(iv.createdAt).toLocaleDateString()
-                                  : "N/A"}
+                                  ? new Date(iv.createdAt).toLocaleDateString(
+                                      undefined,
+                                      {
+                                        month: "short",
+                                        day: "2-digit",
+                                      }
+                                    )
+                                  : "—"}
                               </span>
                             </TableCell>
                             <TableCell>
-                              <span className="px-3 py-1 bg-primary/5 text-primary rounded-full text-[11px] font-extrabold uppercase tracking-tight">
+                              <span className="badge-soft bg-primary/10 text-primary border-primary">
                                 {iv.type}
                               </span>
                             </TableCell>
-                            <TableCell className="text-[14px] text-slate-600 font-medium">
+                            <TableCell className="text-sm font-bold text-foreground">
                               {iv.doctorNotes}
                             </TableCell>
-                            <TableCell className="text-right px-6">
+                            <TableCell className="text-right px-8">
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-9 w-9 text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                className="h-8 w-8 text-muted-foreground hover:bg-destructive hover:text-white rounded-full transition-all border border-transparent hover:border-black"
                                 onClick={() => handleDeleteIntervention(iv.id)}
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </TableCell>
                           </TableRow>

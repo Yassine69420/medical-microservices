@@ -31,53 +31,52 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center auth-gradient p-6">
-      <div className="w-full max-w-[440px] animate-in">
+    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+      <div className="w-full max-w-[420px] animate-in">
         <div className="flex flex-col items-center mb-10">
-          <div className="flex items-center justify-center w-20 h-20 rounded-[24px] bg-primary shadow-[0_12px_24px_-4px_rgba(59,130,246,0.3)] mb-6 transition-transform hover:scale-105">
-            <HeartPulse className="w-10 h-10 text-white" />
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary border-black border-2 mb-6 transition-transform hover:scale-110 hover:rotate-6">
+            <HeartPulse className="w-8 h-8 text-[#4f46e5]" />
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-black text-foreground tracking-tighter">
             MedConnect
           </h1>
-          <p className="text-slate-500 font-medium mt-2">
-            Intelligent Health Management
+          <p className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px] mt-2">
+            Clinic Registration
           </p>
         </div>
 
-        <Card className="premium-card">
-          <CardHeader className="space-y-2 pb-6 px-8 pt-8">
-            <CardTitle className="text-2xl font-bold tracking-tight text-center">
-              Create account
+        <Card className="bg-card border-black border-2 rounded-[2rem] overflow-hidden shadow-sm">
+          <CardHeader className="space-y-1 pb-6 px-10 pt-10 text-center">
+            <CardTitle className="text-3xl font-black tracking-tighter text-foreground">
+              Create Profile
             </CardTitle>
-            <CardDescription className="text-center text-[15px]">
-              Join our network of healthcare professionals
+            <CardDescription className="text-muted-foreground font-bold text-sm">
+              Set up your clinic login
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-5 px-8">
+            <CardContent className="space-y-5 px-10">
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
-                  className="text-sm font-semibold text-slate-700 ml-1"
+                  className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1"
                 >
-                  Email Address
+                  Clinical Email
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder="admin@medical.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input-field h-11 px-4"
+                  className="input-field h-12"
                   required
                 />
               </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="password"
-                  university
-                  className="text-sm font-semibold text-slate-700 ml-1"
+                  className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1"
                 >
                   Password
                 </Label>
@@ -87,42 +86,42 @@ export default function Register() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input-field h-11 px-4"
+                  className="input-field h-12"
                   required
                 />
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col gap-6 px-8 pb-8 pt-4">
+            <CardFooter className="flex flex-col gap-6 px-10 pb-10 pt-6">
               <Button
                 type="submit"
-                className="btn-primary w-full h-11 text-[15px] font-semibold"
+                className="btn-primary w-full h-12 rounded-full"
               >
-                Create Account
+                Register
               </Button>
               <div className="relative w-full">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-slate-200"></span>
+                  <span className="w-full border-t border-black/5"></span>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-3 text-slate-500 font-medium">
-                    Already registered?
+                <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-black">
+                  <span className="bg-card px-3 text-muted-foreground">
+                    Already onboarded?
                   </span>
                 </div>
               </div>
-              <p className="text-center text-sm font-medium text-slate-600">
+              <p className="text-center text-sm font-bold">
                 <Link
                   to="/login"
-                  className="text-primary hover:text-primary/80 transition-colors font-bold underline-offset-4 hover:underline"
+                  className="text-primary hover:underline decoration-2 underline-offset-4"
                 >
-                  Sign in to portal
+                  Sign in to Portal
                 </Link>
               </p>
             </CardFooter>
           </form>
         </Card>
 
-        <p className="mt-8 text-center text-xs text-slate-400 font-medium">
-          © 2025 MedConnect Systems. All rights reserved.
+        <p className="mt-8 text-center text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em]">
+          MedConnect v2.4
         </p>
       </div>
     </div>

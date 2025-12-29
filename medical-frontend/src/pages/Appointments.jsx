@@ -64,35 +64,46 @@ export default function Appointments() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col selection:bg-primary/20">
       <Navbar />
       <main className="flex-1 container mx-auto px-6 py-10 animate-in">
         <div className="max-w-6xl mx-auto space-y-8">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              Appointments
-            </h1>
-            <p className="text-slate-500 font-medium">Manage your schedule</p>
+            <div className="space-y-2">
+              <span className="badge-soft bg-primary/10 text-primary border-primary">
+                Schedule
+              </span>
+              <h1 className="text-4xl font-black text-foreground tracking-tighter">
+                Appointments
+              </h1>
+              <p className="text-muted-foreground font-bold text-sm">
+                Live monitoring of upcoming clinical encounters
+              </p>
+            </div>
           </div>
 
-          <Card className="premium-card border-none">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <Card className="bg-card border-black border-2 rounded-[2rem] overflow-hidden shadow-sm">
+            <CardHeader className="bg-muted/10 border-b border-black py-6">
+              <CardTitle className="flex items-center gap-3 text-foreground text-xl font-black tracking-tighter">
                 <CalendarDays className="h-5 w-5 text-primary" />
-                All Scheduled Visits
+                Scheduled Appointments
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <Table>
-                <TableHeader className="bg-slate-50/50">
-                  <TableRow>
-                    <TableHead className="font-bold">Date & Time</TableHead>
-                    <TableHead className="font-bold">
-                      Patient Reference
+                <TableHeader className="bg-muted/30">
+                  <TableRow className="border-black border-b hover:bg-transparent">
+                    <TableHead className="px-8 py-5 font-black text-muted-foreground text-[10px] uppercase tracking-widest text-center">
+                      Time Slot
                     </TableHead>
-                    <TableHead className="font-bold">Status</TableHead>
-                    <TableHead className="text-right font-bold">
-                      Actions
+                    <TableHead className="font-black text-muted-foreground text-[10px] uppercase tracking-widest">
+                      Patient
+                    </TableHead>
+                    <TableHead className="font-black text-muted-foreground text-[10px] uppercase tracking-widest">
+                      Status
+                    </TableHead>
+                    <TableHead className="text-right font-black text-muted-foreground text-[10px] uppercase tracking-widest px-8">
+                      Operations
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -101,54 +112,71 @@ export default function Appointments() {
                     <TableRow>
                       <TableCell
                         colSpan={4}
-                        className="h-32 text-center text-slate-500 font-medium"
+                        className="h-48 text-center border-none"
                       >
-                        No appointments found.
+                        <div className="flex flex-col items-center justify-center gap-3 opacity-40">
+                          <Calendar className="h-10 w-10 text-primary" />
+                          <p className="font-black uppercase tracking-[0.2em] text-[10px]">
+                            No Appointments
+                          </p>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : (
                     appointments.map((appt) => (
-                      <TableRow key={appt.id} className="hover:bg-slate-50/50">
-                        <TableCell>
-                          <div className="flex items-center gap-2 font-medium text-slate-700">
-                            <Calendar className="h-4 w-4 text-slate-400" />
-                            {new Date(appt.dateTime).toLocaleDateString()}
-                            <div className="w-1 h-1 bg-slate-300 rounded-full mx-2"></div>
-                            <Clock className="h-4 w-4 text-slate-400" />
-                            {new Date(appt.dateTime).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                      <TableRow
+                        key={appt.id}
+                        className="border-muted/50 hover:bg-muted/10 transition-colors border-b last:border-none"
+                      >
+                        <TableCell className="px-8 py-6">
+                          <div className="flex items-center gap-3 text-foreground">
+                            <div className="flex items-center gap-2 font-black text-sm">
+                              <Calendar className="h-4 w-4 text-primary" />
+                              {new Date(appt.dateTime).toLocaleDateString(
+                                undefined,
+                                {
+                                  month: "short",
+                                  day: "2-digit",
+                                }
+                              )}
+                            </div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"></div>
+                            <div className="flex items-center gap-2 font-black text-sm text-foreground">
+                              <Clock className="h-4 w-4 text-primary" />
+                              {new Date(appt.dateTime).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-slate-400" />
-                            <span className="font-mono text-xs bg-slate-100 px-2 py-1 rounded">
-                              {appt.patientId?.substring(0, 8)}
+                          <div className="flex items-center gap-3">
+                            <span className="font-mono text-[11px] font-black text-foreground bg-secondary/10 border border-black px-2.5 py-1.5 rounded-lg shadow-sm">
+                              ID-{appt.patientId?.substring(0, 8).toUpperCase()}
                             </span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            className={`badge-soft transition-all ${
                               appt.status === "PLANNED"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-gray-100 text-gray-700"
+                                ? "bg-secondary text-secondary-foreground border-black"
+                                : "bg-muted text-muted-foreground"
                             }`}
                           >
                             {appt.status}
                           </span>
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right px-8">
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => handleDelete(appt.id)}
-                            className="text-red-500 hover:bg-red-50"
+                            className="h-9 px-4 text-foreground hover:bg-destructive hover:text-white transition-all font-black rounded-full border-black border-2 text-xs"
                           >
-                            <Trash2 className="h-4 w-4" />
-                            <span className="ml-2">Cancel</span>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            ABORT
                           </Button>
                         </TableCell>
                       </TableRow>

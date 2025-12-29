@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Trash2 } from "lucide-react";
 import api from "../api/axios";
 
 export default function MedicalRecordDialog({ patient, open, onOpenChange }) {
@@ -140,74 +141,93 @@ export default function MedicalRecordDialog({ patient, open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            Medical Record: {patient?.firstName} {patient?.lastName}
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto rounded-[2rem] p-8 bg-card border-black border-2 shadow-2xl">
+        <DialogHeader className="pb-6 border-b border-black mb-6">
+          <DialogTitle className="text-3xl font-black text-foreground tracking-tighter">
+            Patient Record: {patient?.firstName} {patient?.lastName}
           </DialogTitle>
-          <DialogDescription>
-            Manage health information and medical interventions.
+          <DialogDescription className="text-muted-foreground font-bold text-sm">
+            View clinical history and manage record details.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          <div className="grid grid-cols-2 gap-4 border p-4 rounded-lg bg-muted/30">
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 gap-6 bg-muted/10 p-6 rounded-[1.5rem] border-black border-2">
             <div className="col-span-2 space-y-2">
-              <Label>Diagnosis</Label>
+              <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                Current Evaluation
+              </Label>
               <Input
                 value={record.diagnosis}
                 onChange={(e) =>
                   setRecord({ ...record, diagnosis: e.target.value })
                 }
+                className="input-field h-12"
               />
             </div>
             <div className="space-y-2">
-              <Label>Allergies</Label>
+              <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                Allergies
+              </Label>
               <Input
                 value={record.allergies}
                 onChange={(e) =>
                   setRecord({ ...record, allergies: e.target.value })
                 }
+                className="input-field h-12"
               />
             </div>
             <div className="space-y-2">
-              <Label>Treatments</Label>
+              <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                Active Treatments
+              </Label>
               <Input
                 value={record.treatments}
                 onChange={(e) =>
                   setRecord({ ...record, treatments: e.target.value })
                 }
+                className="input-field h-12"
               />
             </div>
             <div className="col-span-2 space-y-2">
-              <Label>Notes</Label>
-              <Input
+              <Label className="font-black text-[10px] uppercase tracking-widest text-muted-foreground ml-1">
+                Practitioner Notes
+              </Label>
+              <textarea
                 value={record.notes}
                 onChange={(e) =>
                   setRecord({ ...record, notes: e.target.value })
                 }
+                className="input-field w-full min-h-[100px] p-4 text-sm font-bold"
               />
             </div>
-            <div className="col-span-2 flex justify-end text-xs text-muted-foreground">
-              Last Updated:{" "}
-              {record.updatedAt
-                ? new Date(record.updatedAt).toLocaleString()
-                : "Never"}
-            </div>
-            <div className="col-span-2 flex justify-end">
-              <Button onClick={handleUpdateRecord} size="sm">
+            <div className="col-span-2 flex justify-between items-center">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                Last Sync:{" "}
+                {record.updatedAt
+                  ? new Date(record.updatedAt).toLocaleDateString()
+                  : "New"}
+              </span>
+              <Button
+                onClick={handleUpdateRecord}
+                className="btn-primary h-11 px-8 rounded-full text-xs"
+              >
                 Save Changes
               </Button>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Interventions</h3>
-            <div className="grid grid-cols-3 gap-2 items-end border p-4 rounded-lg bg-muted/10">
-              <div className="space-y-1">
-                <Label className="text-xs">Type</Label>
+            <h3 className="text-xl font-black text-foreground tracking-tighter uppercase">
+              History
+            </h3>
+            <div className="flex flex-col lg:flex-row gap-4 bg-muted/20 p-6 rounded-[1.5rem] border-black border-2">
+              <div className="flex-1 space-y-1">
+                <Label className="font-black text-[9px] text-muted-foreground uppercase tracking-widest ml-1">
+                  Intervention Type
+                </Label>
                 <Input
-                  placeholder="Surgery, Checkup..."
+                  placeholder="e.g. Analysis"
                   value={newIntervention.type}
                   onChange={(e) =>
                     setNewIntervention({
@@ -215,12 +235,15 @@ export default function MedicalRecordDialog({ patient, open, onOpenChange }) {
                       type: e.target.value,
                     })
                   }
+                  className="input-field h-11 text-xs"
                 />
               </div>
-              <div className="col-span-1 space-y-1">
-                <Label className="text-xs">Doctor Notes</Label>
+              <div className="flex-[2] space-y-1">
+                <Label className="font-black text-[9px] text-muted-foreground uppercase tracking-widest ml-1">
+                  Observations
+                </Label>
                 <Input
-                  placeholder="Details..."
+                  placeholder="Key findings..."
                   value={newIntervention.doctorNotes}
                   onChange={(e) =>
                     setNewIntervention({
@@ -228,47 +251,70 @@ export default function MedicalRecordDialog({ patient, open, onOpenChange }) {
                       doctorNotes: e.target.value,
                     })
                   }
+                  className="input-field h-11 text-xs"
                 />
               </div>
-              <Button onClick={handleAddIntervention}>Add Intervention</Button>
+              <Button
+                onClick={handleAddIntervention}
+                className="lg:mt-auto btn-primary h-11 px-6 rounded-full text-xs"
+              >
+                ADD ENTRY
+              </Button>
             </div>
 
-            <div className="border rounded-md">
+            <div className="bg-card border-black border-2 rounded-[2rem] overflow-hidden">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Notes</TableHead>
-                    <TableHead>Actions</TableHead>
+                <TableHeader className="bg-muted/30">
+                  <TableRow className="border-black border-b">
+                    <TableHead className="font-black text-muted-foreground text-[9px] uppercase tracking-widest px-6 py-4">
+                      Timeline
+                    </TableHead>
+                    <TableHead className="font-black text-muted-foreground text-[9px] uppercase tracking-widest">
+                      Type
+                    </TableHead>
+                    <TableHead className="font-black text-muted-foreground text-[9px] uppercase tracking-widest">
+                      Notes
+                    </TableHead>
+                    <TableHead className="text-right px-6"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {interventions.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-4">
-                        No interventions recorded.
+                      <TableCell
+                        colSpan={4}
+                        className="text-center py-10 opacity-30 text-[9px] font-black uppercase tracking-widest"
+                      >
+                        History Empty
                       </TableCell>
                     </TableRow>
                   ) : (
                     interventions.map((iv) => (
-                      <TableRow key={iv.id}>
-                        <TableCell className="text-xs">
+                      <TableRow
+                        key={iv.id}
+                        className="border-muted/50 border-b last:border-none"
+                      >
+                        <TableCell className="px-6 py-4 font-mono text-[10px] font-black">
                           {iv.createdAt
                             ? new Date(iv.createdAt).toLocaleDateString()
-                            : "N/A"}
-                        </TableCell>
-                        <TableCell>{iv.type}</TableCell>
-                        <TableCell className="text-xs italic">
-                          {iv.doctorNotes}
+                            : "—"}
                         </TableCell>
                         <TableCell>
+                          <span className="badge-soft bg-primary/10 text-primary border-primary">
+                            {iv.type}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-xs font-bold text-foreground">
+                          {iv.doctorNotes}
+                        </TableCell>
+                        <TableCell className="text-right px-6">
                           <Button
-                            variant="destructive"
+                            variant="outline"
                             size="sm"
                             onClick={() => handleDeleteIntervention(iv.id)}
+                            className="h-8 w-8 rounded-full border-black border-2 text-foreground hover:bg-destructive hover:text-white p-0"
                           >
-                            Delete
+                            <Trash2 className="h-3.5 w-3.5" />
                           </Button>
                         </TableCell>
                       </TableRow>

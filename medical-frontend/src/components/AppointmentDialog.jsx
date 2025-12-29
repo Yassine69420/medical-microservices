@@ -70,60 +70,60 @@ export default function AppointmentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] rounded-2xl">
+      <DialogContent className="sm:max-w-[400px] rounded-[2.5rem] bg-card border-black border-2 p-8 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-slate-900">
-            Schedule Appointment
+          <DialogTitle className="text-3xl font-black text-foreground tracking-tighter">
+            New Appointment
           </DialogTitle>
-          <DialogDescription>
-            Book a new consultation for this patient.
+          <DialogDescription className="text-muted-foreground font-bold text-sm">
+            Schedule a new visit for this patient.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-6 py-6">
           {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium">
-              {error}
+            <div className="bg-destructive/10 border-2 border-black p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-destructive animate-in slide-in-from-top-2">
+              Error: {error}
             </div>
           )}
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-2">
             <Label
               htmlFor="date"
-              className="text-right font-semibold text-slate-700"
+              className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1"
             >
-              Date
+              Session Date
             </Label>
             <Input
               id="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="col-span-3 input-field"
+              className="input-field h-12"
               min={new Date().toISOString().split("T")[0]}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-2">
             <Label
               htmlFor="time"
-              className="text-right font-semibold text-slate-700"
+              className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1"
             >
-              Time
+              Select Time
             </Label>
             <Input
               id="time"
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="col-span-3 input-field"
+              className="input-field h-12"
             />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="pt-2">
           <Button
             onClick={handleSubmit}
             disabled={loading}
-            className="btn-primary w-full sm:w-auto font-bold"
+            className="btn-primary w-full h-12 rounded-full shadow-sm text-xs"
           >
-            {loading ? "Booking..." : "Confirm Booking"}
+            {loading ? "Transmitting..." : "Confirm Booking"}
           </Button>
         </DialogFooter>
       </DialogContent>
