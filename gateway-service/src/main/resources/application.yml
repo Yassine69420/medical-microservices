@@ -41,7 +41,7 @@ spring:
         - id: rdv-service
           uri: lb://rdv-service
           predicates:
-            - Path=/rdv/**
+            - Path=/rendezvous/**
           filters:
             - JwtFilter
 eureka:

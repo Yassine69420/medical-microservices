@@ -21,7 +21,21 @@ public class RdvService {
         return rdvRepo.findAll();
     }
 
+    public List<RendezVous> getUpcomingAppointments(UUID doctorId) {
+        return rdvRepo.findTop3ByDoctorIdAndDateTimeAfterOrderByDateTimeAsc(doctorId, java.time.LocalDateTime.now());
+    }
+
     public RendezVous save(RendezVous rdv) {
+        // Validation: Check for overlap
+        // Assume 30 min duration
+        java.time.LocalDateTime start = rdv.getDateTime();
+        java.time.LocalDateTime conflictStart = start.minusMinutes(30);
+        java.time.LocalDateTime conflictEnd = start.plusMinutes(30);
+
+        if (rdvRepo.hasOverlappingAppointments(rdv.getDoctorId(), conflictStart, conflictEnd)) {
+            throw new RuntimeException("Time slot overlaps with an existing appointment");
+        }
+
         return rdvRepo.save(rdv);
     }
 

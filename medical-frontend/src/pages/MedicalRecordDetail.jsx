@@ -29,9 +29,11 @@ import {
   UserCircle,
   Stethoscope,
   Info,
+  CalendarPlus,
 } from "lucide-react";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import AppointmentDialog from "../components/AppointmentDialog";
 
 export default function MedicalRecordDetail() {
   const { patientId } = useParams();
@@ -49,6 +51,7 @@ export default function MedicalRecordDetail() {
     doctorNotes: "",
   });
   const [loading, setLoading] = useState(true);
+  const [appointmentOpen, setAppointmentOpen] = useState(false);
 
   useEffect(() => {
     if (patientId) {
@@ -202,14 +205,30 @@ export default function MedicalRecordDetail() {
                 </h1>
               </div>
             </div>
-            <Button
-              onClick={handleUpdateRecord}
-              className="btn-primary h-12 px-8 rounded-xl font-bold gap-2"
-            >
-              <Save className="h-5 w-5" />
-              Update Patient Record
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setAppointmentOpen(true)}
+                variant="outline"
+                className="h-12 px-6 rounded-xl font-bold gap-2 border-slate-200 text-slate-700 hover:bg-slate-50"
+              >
+                <CalendarPlus className="h-5 w-5 text-primary" />
+                Book Appointment
+              </Button>
+              <Button
+                onClick={handleUpdateRecord}
+                className="btn-primary h-12 px-8 rounded-xl font-bold gap-2"
+              >
+                <Save className="h-5 w-5" />
+                Update Patient Record
+              </Button>
+            </div>
           </div>
+
+          <AppointmentDialog
+            open={appointmentOpen}
+            onOpenChange={setAppointmentOpen}
+            patientId={patientId}
+          />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left Column: Quick Insights */}

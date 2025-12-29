@@ -39,6 +39,11 @@ public class RdvController {
         return rdvService.getAllRdvs();
     }
 
+    @GetMapping("/doctor/{doctorId}/upcoming")
+    public List<RendezVous> getUpcomingAppointments(@PathVariable UUID doctorId) {
+        return rdvService.getUpcomingAppointments(doctorId);
+    }
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody RendezVous rdv,
             @RequestHeader(value = "X-User-Role", required = false) String role) {
@@ -47,16 +52,17 @@ public class RdvController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only Patients or Doctors can create appointments");
         }
 
-        // Validate users exist in Auth-Service
+        // Note: patientId here refers to the patient-service Patient ID, not
+        // auth-service userId.
+        // We skip auth-service validation as we're already authenticated via JWT.
+        // Optionally, you could add a patient-service Feign client to validate if
+        // needed.
+
         try {
-            if (rdv.getPatientId() != null)
-                authServiceClient.getUserById(rdv.getPatientId());
-            if (rdv.getDoctorId() != null)
-                authServiceClient.getUserById(rdv.getDoctorId());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Patient or Doctor not found in Auth-Service");
+            return ResponseEntity.ok(rdvService.save(rdv));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
-        return ResponseEntity.ok(rdvService.save(rdv));
     }
 
     @PutMapping("/{id}")

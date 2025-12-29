@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import MedicalRecordDetail from "./pages/MedicalRecordDetail";
+import Appointments from "./pages/Appointments";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         path="/patients/:patientId/record"
         element={<MedicalRecordDetail />}
       />
+      <Route path="/appointments" element={<Appointments />} />
       <Route path="/" element={<Login />} />
     </Routes>
   );

@@ -46,6 +46,7 @@ export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
 
   const fetchPatients = async () => {
     try {
@@ -56,9 +57,21 @@ export default function Dashboard() {
     }
   };
 
+  const fetchUpcomingAppointments = async () => {
+    if (user?.id) {
+      try {
+        const res = await api.get(`/rendezvous/doctor/${user.id}/upcoming`);
+        setUpcomingAppointments(res.data);
+      } catch (error) {
+        console.error("Failed to fetch upcoming appts", error);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchPatients();
-  }, []);
+    if (user) fetchUpcomingAppointments();
+  }, [user]);
 
   const resetForm = () => {
     setNewPatient({ firstName: "", lastName: "", email: "" });
@@ -148,103 +161,145 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <Dialog
-            open={isOpen}
-            onOpenChange={(open) => {
-              if (!open) resetForm();
-              setIsOpen(open);
-            }}
-          >
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => resetForm()}
-                className="btn-primary gap-2 h-12 px-6 rounded-xl font-bold"
-              >
-                <Plus className="w-5 h-5" />
-                Add New Patient
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[480px] rounded-3xl p-8">
-              <DialogHeader className="pb-4">
-                <DialogTitle className="text-2xl font-bold">
-                  {isEditing ? "Modify Patient" : "Enroll New Patient"}
-                </DialogTitle>
-                <DialogDescription className="text-[15px]">
-                  {isEditing
-                    ? "Update the patient's identity information below."
-                    : "Fill in the details to create a new patient account and profile."}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-6 py-4">
-                <div className="grid gap-2">
-                  <Label
-                    htmlFor="firstName"
-                    className="font-bold text-slate-700 ml-1"
-                  >
-                    First Name
-                  </Label>
-                  <Input
-                    id="firstName"
-                    value={newPatient.firstName}
-                    onChange={(e) =>
-                      setNewPatient({
-                        ...newPatient,
-                        firstName: e.target.value,
-                      })
-                    }
-                    placeholder="Enter first name"
-                    className="input-field h-11"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label
-                    htmlFor="lastName"
-                    className="font-bold text-slate-700 ml-1"
-                  >
-                    Last Name
-                  </Label>
-                  <Input
-                    id="lastName"
-                    value={newPatient.lastName}
-                    onChange={(e) =>
-                      setNewPatient({ ...newPatient, lastName: e.target.value })
-                    }
-                    placeholder="Enter last name"
-                    className="input-field h-11"
-                  />
-                </div>
-                {!isEditing && (
+          <div className="flex gap-4">
+            <Button
+              onClick={() => navigate("/appointments")}
+              variant="outline"
+              className="btn-primary gap-2 h-12 px-6 rounded-xl font-bold bg-white text-primary border-slate-200 hover:bg-slate-50 shadow-sm"
+            >
+              Manage Schedule
+            </Button>
+            <Dialog
+              open={isOpen}
+              onOpenChange={(open) => {
+                if (!open) resetForm();
+                setIsOpen(open);
+              }}
+            >
+              <DialogTrigger asChild>
+                <Button
+                  onClick={() => resetForm()}
+                  className="btn-primary gap-2 h-12 px-6 rounded-xl font-bold"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add New Patient
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[480px] rounded-3xl p-8">
+                <DialogHeader className="pb-4">
+                  <DialogTitle className="text-2xl font-bold">
+                    {isEditing ? "Modify Patient" : "Enroll New Patient"}
+                  </DialogTitle>
+                  <DialogDescription className="text-[15px]">
+                    {isEditing
+                      ? "Update the patient's identity information below."
+                      : "Fill in the details to create a new patient account and profile."}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-6 py-4">
                   <div className="grid gap-2">
                     <Label
-                      htmlFor="email"
+                      htmlFor="firstName"
                       className="font-bold text-slate-700 ml-1"
                     >
-                      Email (Account ID)
+                      First Name
                     </Label>
                     <Input
-                      id="email"
-                      type="email"
-                      value={newPatient.email}
+                      id="firstName"
+                      value={newPatient.firstName}
                       onChange={(e) =>
-                        setNewPatient({ ...newPatient, email: e.target.value })
+                        setNewPatient({
+                          ...newPatient,
+                          firstName: e.target.value,
+                        })
                       }
-                      placeholder="patient@email.com"
+                      placeholder="Enter first name"
                       className="input-field h-11"
                     />
                   </div>
-                )}
-              </div>
-              <DialogFooter className="pt-6">
-                <Button
-                  onClick={handleSavePatient}
-                  className="btn-primary h-12 px-8 font-bold w-full sm:w-auto"
-                >
-                  {isEditing ? "Save Changes" : "Confirm Enrollment"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="lastName"
+                      className="font-bold text-slate-700 ml-1"
+                    >
+                      Last Name
+                    </Label>
+                    <Input
+                      id="lastName"
+                      value={newPatient.lastName}
+                      onChange={(e) =>
+                        setNewPatient({
+                          ...newPatient,
+                          lastName: e.target.value,
+                        })
+                      }
+                      placeholder="Enter last name"
+                      className="input-field h-11"
+                    />
+                  </div>
+                  {!isEditing && (
+                    <div className="grid gap-2">
+                      <Label
+                        htmlFor="email"
+                        className="font-bold text-slate-700 ml-1"
+                      >
+                        Email (Account ID)
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newPatient.email}
+                        onChange={(e) =>
+                          setNewPatient({
+                            ...newPatient,
+                            email: e.target.value,
+                          })
+                        }
+                        placeholder="patient@email.com"
+                        className="input-field h-11"
+                      />
+                    </div>
+                  )}
+                </div>
+                <DialogFooter className="pt-6">
+                  <Button
+                    onClick={handleSavePatient}
+                    className="btn-primary h-12 px-8 font-bold w-full sm:w-auto"
+                  >
+                    {isEditing ? "Save Changes" : "Confirm Enrollment"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
+
+        {/* Upcoming Appointments Summary */}
+        {upcomingAppointments.length > 0 && (
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            {upcomingAppointments.map((apt) => (
+              <div
+                key={apt.id}
+                className="premium-card p-5 flex flex-col justify-between border-l-4 border-l-primary/60"
+              >
+                <div>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Next Appointment
+                  </span>
+                  <div className="text-lg font-bold text-slate-800 mt-1">
+                    {new Date(apt.dateTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                  <div className="text-sm text-slate-500 font-medium">
+                    {new Date(apt.dateTime).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Search and Filters Bar */}
         <div className="mb-8 flex flex-col sm:row items-center gap-4">
