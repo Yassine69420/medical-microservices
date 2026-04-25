@@ -35,7 +35,7 @@ export default function Register() {
       <div className="w-full max-w-[420px] animate-in">
         <div className="flex flex-col items-center mb-10">
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary border-black border-2 mb-6 transition-transform hover:scale-110 hover:rotate-6">
-            <HeartPulse className="w-8 h-8 text-[#4f46e5]" />
+            <HeartPulse className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-black text-foreground tracking-tighter">
             MedConnect

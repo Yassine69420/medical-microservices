@@ -20,7 +20,7 @@ export default function Navbar() {
           onClick={() => navigate("/dashboard")}
         >
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary border-black border-2 transition-transform hover:rotate-12">
-            <HeartPulse className="w-5 h-5 text-[#4f46e5]" />
+            <HeartPulse className="w-5 h-5 text-white" />
           </div>
           <div className="flex flex-col">
             <h1 className="text-lg font-black text-foreground tracking-tighter leading-none">
